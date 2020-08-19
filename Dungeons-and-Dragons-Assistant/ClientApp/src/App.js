@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Home } from './components/Home';
 import { Character } from './components/Character';
 import { Encounter } from './components/Encounter';
 
 import {
-    BrowserRouter as Router,
     Switch,
     Route,
     Link
@@ -16,7 +15,7 @@ export const App = () => {
 
     return (
         <div>
-            <ButtonGroup size="large" variant="text" color="primary" aria-label="text primary button group">
+            <div>
                 <Link to="/">
                     <Button>
                         Home
@@ -32,18 +31,18 @@ export const App = () => {
                         Encounter
                     </Button>
                 </Link>
-                <Switch>
-                    <Route path="/Character">
-                        <Character />
-                    </Route>
-                    <Route path="/Encounter">
-                        <Encounter />
-                    </Route>
-                    <Route path="/">
-                        <Home />
-                    </Route>
-                </Switch>
-            </ButtonGroup>
+            </div>
+            <Switch>
+                <Route path="/Character">
+                    <Character />
+                </Route>
+                <Route path="/Encounter">
+                    <Encounter />
+                </Route>
+                <Route path="/">
+                    <Home />
+                </Route>
+            </Switch>
         </div>
     )
 }

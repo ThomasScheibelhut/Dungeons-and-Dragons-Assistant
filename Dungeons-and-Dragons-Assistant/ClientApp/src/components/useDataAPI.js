@@ -1,7 +1,8 @@
-﻿import { useEffect, useState, useReducer } from 'react';
+﻿import { useEffect, useState, useReducer } from 'react'
+
 
 const dataFetchReducer = (state, action) => {
-    switch (action.Type) {
+    switch (action.type) {
         case 'FETCH_INIT':
             return {
                 ...state,
@@ -13,50 +14,51 @@ const dataFetchReducer = (state, action) => {
                 ...state,
                 isLoading: false,
                 isError: false,
-                data: action.payload
+                data: action.payload,
             };
         case 'FETCH_FAILURE':
             return {
                 ...state,
                 isLoading: false,
-                isError: true
+                isError: true,
             };
         default:
             throw new Error();
     }
-}
 
-export const useDataAPI = (initialURL, initialData) => {
-    const [url, seturl] = useState(initialURL);
+};
 
-    const [state, dispatch] = useREducer(dataFetchReducer, {
+export const useDataApi = (initialUrl, initialData) => {
+    const [url, setUrl] = useState(initialUrl);
+
+    const [state, dispatch] = useReducer(dataFetchReducer, {
         isLoading: false,
         isError: false,
-        data: initialData
-    })
+        data: initialData,
+    });
 
     useEffect(() => {
-        if (intiialURL.includes('//')) {
+        if (initialUrl.includes('//')) {
             return () => {
                 didCancel = true;
-            }
+            };
         }
 
         let didCancel = false;
 
         dispatch({ type: 'FETCH_INIT' });
 
-        fetch(url)
-            .then(res => res.json())
+        fetch(url).then(res => res.json())
             .then(response => {
                 if (!didCancel) {
                     if (response) {
                         if (Array.isArray(response)) {
-                            dispatch({ type: 'FETCH_SECCESS' }, payload: response)
+                            dispatch({ type: 'FETCH_SUCCESS', payload: { response } })
+                        } else {
+                            dispatch({ type: 'FETCH_SUCCESS', payload: response })
                         }
-                        else {
-                            dispatch({ type: 'FETCH_SECCESS' }, payload: response)
-                        }
+                    } else {
+                        dispatch({ type: 'FETCH_SUCCESS', payload: { } })
                     }
                 }
             })
@@ -69,7 +71,9 @@ export const useDataAPI = (initialURL, initialData) => {
         return () => {
             didCancel = true;
         };
+
     }, [url]);
 
-    return [state, url];
-}
+    return [state, setUrl];
+
+};
