@@ -2,15 +2,17 @@
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useDataApi } from './useDataAPI';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 export const Encounter = () => {
 
     const [{ data, isLoading, isError }, doFetch] = useDataApi('', []);
 
-    const [difficulty, setDifficulty] = useState(0);
-    const [monsterNumb, setMonsterNumb] = useState(0);
-    const [playerNumb, setPlayerNumb] = useState(0);
-    const [characterLvl, setCharacterLvl] = useState(0);
+    const [difficulty, setDifficulty] = useState(1);
+    const [monsterNumb, setMonsterNumb] = useState('');
+    const [playerNumb, setPlayerNumb] = useState('');
+    const [characterLvl, setCharacterLvl] = useState('');
     const [xp, setXp] = useState([
         [25, 50, 75, 100],
         [50, 100, 150, 200],
@@ -96,34 +98,39 @@ export const Encounter = () => {
         })
     }
 
-
-
     return (
         <div>
             <h1>Encounter Builder</h1>
-            <TextField
-                id="Difficulty"
-                label="Difficulty"
+            <Select
                 value={difficulty}
                 onChange={e => setDifficulty(e.target.value)}
-            />
+            >
+                <MenuItem value={0}>Easy</MenuItem>
+                <MenuItem value={1}>Medium</MenuItem>
+                <MenuItem value={2}>Difficult</MenuItem>
+                <MenuItem value={3}>Deadly</MenuItem>
+            </Select>
             <TextField
                 id="Number of Monsters"
                 label="Number of Monsters"
+                type="number"
                 value={monsterNumb}
-                onChange={e => setMonsterNumb(e.target.value)}
+                onChange={e => (e.target.value > 0 || e.target.value == "") && setMonsterNumb(e.target.value) }
             />
             <TextField
                 id="Number of Characters"
                 label="Number of Characters"
+                type="number"
                 value={playerNumb}
-                onChange={e => setPlayerNumb(e.target.value)}
+                onChange={e => (e.target.value > 0 || e.target.value == "") && setPlayerNumb(e.target.value)}
+                isNumericString
             />
             <TextField
                 id="Level of Characters"
                 label="Level of Characters"
+                type="number"
                 value={characterLvl}
-                onChange={e => setCharacterLvl(e.target.value)}
+                onChange={e => (e.target.value > 0 || e.target.value == "") && setCharacterLvl(e.target.value)}
             />
             <Button
                 variant="contained"
