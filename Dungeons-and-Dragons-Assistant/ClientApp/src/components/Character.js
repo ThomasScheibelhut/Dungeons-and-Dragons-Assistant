@@ -6,6 +6,15 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import { Route, Link } from "react-router-dom";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableRow from '@material-ui/core/TableRow';
 
 
 export const Character = () => {
@@ -15,7 +24,7 @@ export const Character = () => {
     const [isCharacterVisible, setIsCharacterVisible] = useState(false);
 
     const [randomRace, setRandomRace] = useState('');
-    const [randomClass, setRandomClass] = useState('');
+    const [randomClass, setRandomClass] = useState(''); 
     const [randomWeapon, setRandomWeapon] = useState('');
     const [randomArmor, setRandomArmor] = useState('');
     const [randomItems, setRandomItems] = useState('');
@@ -26,6 +35,27 @@ export const Character = () => {
     async function generateCharacter () {
         setIsCharacterVisible(false);
 
+        var classList = await fetch('https://www.dnd5eapi.co/api/classes').then(res => res.json());
+        var classinfo = classList.results[Math.floor(Math.random() * classList.count)];
+        setRandomClass(await fetch('https://www.dnd5eapi.co' + classinfo.url).then(res => res.json()));
+        setLevel(await fetch('https://www.dnd5eapi.co/api/classes/' + classinfo.index + '/levels/1').then(res => res.json()));
+
+        let chosenWeapons = []
+        var weaponList = await fetch('https://www.dnd5eapi.co/api/equipment-categories/weapon').then(res => res.json());
+        chosenWeapons.push(await fetch('https://www.dnd5eapi.co' + weaponList.equipment[Math.floor(Math.random() * 37)].url).then(res => res.json()));
+        chosenWeapons.push(await fetch('https://www.dnd5eapi.co' + weaponList.equipment[Math.floor(Math.random() * 37)].url).then(res => res.json()));
+        setRandomWeapon(chosenWeapons);
+
+        let chosenItems = []
+        var itemList = await fetch('https://www.dnd5eapi.co/api/equipment-categories/adventuring-gear').then(res => res.json());
+        chosenItems.push(await fetch('https://www.dnd5eapi.co' + itemList.equipment[Math.floor(Math.random() * 105)].url).then(res => res.json()));
+        chosenItems.push(await fetch('https://www.dnd5eapi.co' + itemList.equipment[Math.floor(Math.random() * 105)].url).then(res => res.json()));
+        chosenItems.push(await fetch('https://www.dnd5eapi.co' + itemList.equipment[Math.floor(Math.random() * 105)].url).then(res => res.json()));
+        setRandomItems(chosenItems);
+
+        var armorList = await fetch('https://www.dnd5eapi.co/api/equipment-categories/armor').then(res => res.json());
+        setRandomArmor(await fetch('https://www.dnd5eapi.co' + armorList.equipment[Math.floor(Math.random() * 13)].url).then(res => res.json()));
+
         var raceList = await fetch('https://www.dnd5eapi.co/api/races').then(res => res.json());
         setRandomRace(await fetch('https://www.dnd5eapi.co' + raceList.results[Math.floor(Math.random() * raceList.count)].url).then(res => res.json()));
 
@@ -33,18 +63,6 @@ export const Character = () => {
         var classinfo = classList.results[Math.floor(Math.random() * classList.count)];
         setRandomClass(await fetch('https://www.dnd5eapi.co' + classinfo.url).then(res => res.json()));
         setLevel(await fetch('https://www.dnd5eapi.co/api/classes/' + classinfo.index + '/levels/1').then(res => res.json()));
-
-        var weaponList = await fetch('https://www.dnd5eapi.co/api/equipment-categories/weapon').then(res => res.json());
-        setRandomWeapon(await fetch('https://www.dnd5eapi.co' + weaponList.equipment[Math.floor(Math.random() * 37)].url).then(res => res.json()),
-        await fetch('https://www.dnd5eapi.co' + weaponList.equipment[Math.floor(Math.random() * 37)].url).then(res => res.json()));
-
-        var armorList = await fetch('https://www.dnd5eapi.co/api/equipment-categories/armor').then(res => res.json());
-        setRandomArmor(await fetch('https://www.dnd5eapi.co' + armorList.equipment[Math.floor(Math.random() * 13)].url).then(res => res.json()));
-
-        var itemList = await fetch('https://www.dnd5eapi.co/api/equipment-categories/adventuring-gear').then(res => res.json());
-        setRandomItems(await fetch('https://www.dnd5eapi.co' + itemList.equipment[Math.floor(Math.random() * 105)].url).then(res => res.json()),
-        await fetch('https://www.dnd5eapi.co' + itemList.equipment[Math.floor(Math.random() * 105)].url).then(res => res.json()),
-        await fetch('https://www.dnd5eapi.co' + itemList.equipment[Math.floor(Math.random() * 105)].url).then(res => res.json()));
     }
 
     useEffect(() => { 
@@ -67,16 +85,15 @@ export const Character = () => {
             ]
         }
 
-
         setCharacter({
-            Race: randomRace.name,
-            Class: randomClass.name,
+            race: randomRace.name,
+            class: randomClass.name,
             size: randomRace.size,
             speed: randomRace.speed,
             languages: randomRace.languages,
             traits: randomRace.traits,
             features: level.features,
-            hit_die: randomClass.hit_die,
+            health: randomClass.hit_die + Math.floor((con_number - 10) / 2),
             saving_throws: randomClass.saving_throws,
             proficiency_bonus: level.prof_bonus,
             proficiencies: proficiencyList,
@@ -114,52 +131,200 @@ export const Character = () => {
             },
             equipment: {
                 weapons: randomWeapon,
-                Armor: randomArmor,
-                Other: randomItems
+                armor: randomArmor,
+                other: randomItems
             }
         })
     }, [randomClass])
 
     useEffect(() => {
         setIsCharacterVisible(true)
-    }, [character])
+    }, [randomItems])
+
+    useEffect(() => {
+        generateCharacter();
+    }, []);
 
     return (
         <div>
-            <h1>Character Builder</h1>
-            <Button
-                variant="contained"
-                onClick={() => generateCharacter()}
-            >
-                Generate Character
-            </Button>
-
-            {isCharacterVisible && character.languages && <List>
-                <ListItem>
-                    <ListItemText secondary="Speed" primary={character.speed} />
-                </ListItem>
-                <Divider />
-                <ListItem>
-                    <ListItemText secondary="Size" primary={character.size} />
-                </ListItem>
-                <Divider />
-                <ListItem>
-                    <ListItemText secondary="Languages" primary={character.languages.map(txt => txt.name + "\n" )} />
-                </ListItem>
-                <Divider />
-                <ListItem>
-                    <ListItemText secondary="health" primary={character.hit_die} />
-                </ListItem>
-                <Divider />
-                <ListItem>
-                    <ListItemText secondary="Saving Throws" primary={character.saving_throws.map(txt => txt.name + "\n")} />
-                </ListItem>
-                <Divider />
-                <ListItem>
-                    <ListItemText secondary="Strength" primary={character.stats.STR.modifier} />
-                </ListItem>
-                <Divider />
-            </List>}
+            <Paper elevation={3}>
+                <Grid container
+                    direction="row"
+                    justify="space-around"
+                    alignItems="center"
+                    style={{ backgroundColor: "wheat", border: "solid", borderColor: "goldenrod" }}
+                >
+                    <Grid item  >
+                        <h1>Dungeons and Dragons Assistant</h1>
+                    </Grid>
+                    <Grid item>
+                        <Link to="/" style={{ textDecoration: 'none' }}>
+                            <Button>
+                                Home
+                                </Button>
+                        </Link>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <Link to="/Encounter" style={{ textDecoration: 'none' }}>
+                            <Button>
+                                Encounter Builder
+                            </Button>
+                        </Link>
+                    </Grid>
+                </Grid>
+            </Paper>
+            <br />
+            {isCharacterVisible && character.languages &&  
+                <TableContainer component={Paper} style={{ border: "solid", borderColor: "darkgray" }}>
+                    <Table>
+                    <TableBody >
+                            <List>
+                                <ListItem>
+                                    <ListItemText secondary="Race" primary={character.race} />
+                                </ListItem>
+                                <Divider />
+                                <ListItem>
+                                    <ListItemText secondary="Class" primary={character.class} />
+                                </ListItem>
+                            <Divider />
+                            <TextField
+                                style={{ width: "65px" }}
+                                variant="outlined"
+                                label="Health"
+                                inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                value={character.health}
+                            />
+                            <TextField
+                                style={{ width: "65px" }}
+                                variant="outlined"
+                                label="Proficiency Bonus"
+                                inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                value={character.proficiency_bonus}
+                            />
+                            <TextField
+                                style={{ width: "65px" }}
+                                variant="outlined"
+                                label="Speed"
+                                inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                value={character.speed}
+                            />
+                            <TextField
+                                style={{ width: "65px" }}
+                                variant="outlined"
+                                label="Size"
+                                inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                value={character.size}
+                            />
+                            <TextField
+                                style={{ width: "65px" }}
+                                variant="outlined"
+                                inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                label="Armor Class"
+                                value={character.equipment.armor.armor_class.base}
+                            />
+                            <TextField
+                                style={{ width: "75px" }}
+                                variant="outlined"
+                                inputProps={{ min: 0, style: { textAlign: 'center', color: "black" } }}
+                                label="Strength"
+                                value={character.stats.STR.number + " (" + character.stats.STR.modifier + ")"}
+                            />
+                            <TextField
+                                style={{ width: "75px" }}
+                                variant="outlined"
+                                inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                label="Dexterity"
+                                value={character.stats.DEX.number + " (" + character.stats.DEX.modifier + ")"}
+                            />
+                            <TextField
+                                style={{ width: "90px" }}
+                                variant="outlined"
+                                inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                label="Constitution"
+                                value={character.stats.CON.number + " (" + character.stats.CON.modifier + ")"}
+                            />
+                            <TextField
+                                style={{ width: "85px" }}
+                                variant="outlined"
+                                inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                label="Intelligence"
+                                value={character.stats.INT.number + " (" + character.stats.INT.modifier + ")"}
+                            />
+                            <TextField
+                                style={{ width: "75px" }}
+                                variant="outlined"
+                                inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                label="Wisdom"
+                                value={character.stats.WIS.number + " (" + character.stats.WIS.modifier + ")"}
+                            />
+                            <TextField
+                                style={{ width: "75px" }}
+                                variant="outlined"
+                                inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                label="Charisma"
+                                value={character.stats.CHA.number + " (" + character.stats.CHA.modifier + ")"}
+                            />
+                        </List>
+                        <TableContainer style={{ width: "33%" }}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell><h5>Weapons and Armor</h5></TableCell>
+                                        <TableCell></TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {character.equipment && character.equipment.weapons.map((row) => (
+                                        <TableRow>
+                                            <TableCell component="th">
+                                                {row.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {row.damage.damage_dice}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                    <TableRow>
+                                        <TableCell>
+                                            {character.equipment.armor.name} (Armor)
+                                        </TableCell>
+                                        <TableCell>
+                                            AC {character.equipment.armor.armor_class.base}
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TableContainer style={{ width: "60%" }}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell><h5>Items</h5></TableCell>
+                                        <TableCell></TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {character.equipment && character.equipment.other.map((row) => (
+                                        <TableRow>
+                                            <TableCell component="th">
+                                                {row.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {row.desc ? row.desc : <p style={{textAlign: 'center' }}>(No Descrption)</p> }
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                            </TableContainer>
+                        </TableBody>    
+                </Table>
+                <Button
+                    variant="contained"
+                    onClick={() => generateCharacter()}
+                    >
+                        Generate New Character
+                </Button>
+                </TableContainer>}
         </div>
     )
 }
