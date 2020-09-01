@@ -17,4 +17,9 @@ body {
     background-image: url("images/grid.jpg");
 }
 
+.glow-button:hover {
+    text-shadow: rgb(218,165,32);
+    box-shadow: 0 10px 30px rgb(218,165,32);
+}
+
 

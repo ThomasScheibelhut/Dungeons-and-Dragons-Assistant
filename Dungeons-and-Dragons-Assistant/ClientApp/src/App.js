@@ -14,14 +14,6 @@ export const App = () => {
             </Route>
             <Route path="/Encounter">
                 <Encounter />
-                <div style={{
-                    backgroundColor: "grey",
-                    position: "relative",
-                    bottom: "0",
-                    left: "0",
-                    width: "100%"
-                }}>
-                </div>
             </Route>
             <Route path="/">
                     <Home />

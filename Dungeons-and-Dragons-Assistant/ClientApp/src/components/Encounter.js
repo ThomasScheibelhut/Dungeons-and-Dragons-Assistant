@@ -108,120 +108,139 @@ export const Encounter = () => {
 
     return (
         <React.Fragment>
-                <Paper elevation={3}>
-                    <Grid container
-                        direction="row"
-                        justify="space-around"
-                        alignItems="center"
-                        style={{ backgroundColor: "wheat", border: "solid", borderColor: "goldenrod"}}
-                    >
-                        <Grid item >
-                        <h1>Dungeons and Dragons Assistant</h1>
-                        </Grid>
-                        <Grid item>
-                            <Link to="/" style={{ textDecoration: 'none' }}>
-                                <Button>
-                                    Home
-                                </Button>
-                        </Link>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <Link to="/Character" style={{ textDecoration: 'none' }}>
-                            <Button>
-                                Random Character
-                            </Button>
-                        </Link>
+            <Grid container
+                direction="column"
+            >
+                <Paper elevation={10} style={{ backgroundColor: "wheat", border: "solid", borderColor: "goldenrod" }}>
+                    <Grid item >
+                        <Grid container
+                            direction="row"
+                            justify="space-around"
+                            alignItems="center"
+                        >
+                            <Grid item  >
+                                <h1>Dungeons and Dragons Assistant</h1>
+                            </Grid>
+                            <Grid item>
+                                <Link to="/" style={{ textDecoration: 'none' }}>
+                                    <Button>
+                                        Home
+                                        </Button>
+
+                                </Link>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <Link to="/Encounter" style={{ textDecoration: 'none' }}>
+                                    <Button>
+                                        Encounter Builder
+                                    </Button>
+                                </Link>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Paper>
+                <Grid item style={{ backgroundColor: "whitesmoke" }} component={Paper}>
+                    <br />
+                    <h3 style={{ textAlign: 'center' }}>Encounter Builder</h3>
+                    <p style={{ textAlign: 'center' }}>
+                        This page  lets you build an encounter tailored specifically for your players<br />
+                            Make the fight as easy or hard as you'd like!<br />
+                    </p>
+                    <Grid container
+                        direction="column"
+                        justify="space-between"
+                        alignItems="center"
+                    >
+                        <Grid item>
+                            <TableContainer component={Paper} style={{ border: "solid", borderColor: "darkgray" }}>
+                                <Table>
+                                    <TableBody >
+                                        <TableRow>
+                                            <TableCell component="th">
+                                                How many characters?
+                                </TableCell>
+                                            <TableCell align="left">
+                                                <TextField
+                                                    style={{ width: "30%" }}
+                                                    id="Number of Characters"
+                                                    type="number"
+                                                    value={playerNumb}
+                                                    onChange={e => (e.target.value > 0 || e.target.value == "") && setPlayerNumb(e.target.value)}
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell component="th">
+                                                Level of Characters?
+                                </TableCell>
+                                            <TableCell align="left">
+                                                <TextField
+                                                    style={{ width: "30%" }}
+                                                    id="Level of Characters"
+                                                    type="number"
+                                                    value={characterLvl}
+                                                    onChange={e => ((e.target.value <= 20 && e.target.value > 0) || e.target.value == "") && setCharacterLvl(e.target.value)}
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell component="th">
+                                                How many Monsters?
+                                </TableCell>
+                                            <TableCell align="left">
+                                                <TextField
+                                                    style={{ width: "30%" }}
+                                                    id="Number of Monsters"
+                                                    type="number"
+                                                    value={monsterNumb}
+                                                    onChange={e => (e.target.value > 0 || e.target.value == "") && setMonsterNumb(e.target.value)}
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell component="th" style={{ borderBottom: "none" }}>
+                                                Difficulty
+                                </TableCell>
+                                            <TableCell align="left" style={{ borderBottom: "none" }}>
+                                                <Select
+                                                    value={difficulty}
+                                                    onChange={e => setDifficulty(e.target.value)}
+                                                >
+                                                    <MenuItem value={0}>Easy</MenuItem>
+                                                    <MenuItem value={1}>Medium</MenuItem>
+                                                    <MenuItem value={2}>Difficult</MenuItem>
+                                                    <MenuItem value={3}>Deadly</MenuItem>
+                                                </Select>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell align="left">
+                                                <Button
+                                                    variant="contained"
+                                                    onClick={() => generateEncounter()}
+                                                >
+                                                    Generate Encounter
+                                    </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Grid>
+                        <br/>
+                </Grid>
+            </Grid>
                 <br />
                 <Grid container
                     direction="column"
                     justify="space-between"
                     alignItems="center"
                 >
-                <Grid item>
-                <TableContainer component={Paper}  style={{ border:"solid", borderColor:"darkgray" }}>
-                    <Table>
-                        <TableBody >
-                            <TableRow>
-                                <TableCell component="th">
-                                    How many characters?
-                                </TableCell>
-                                <TableCell align="left">
-                                    <TextField
-                                        style={{ width: "30%" }}
-                                        id="Number of Characters"
-                                        type="number"
-                                        value={playerNumb}
-                                        onChange={e => (e.target.value > 0 || e.target.value == "") && setPlayerNumb(e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell component="th">
-                                    Level of Characters?
-                                </TableCell>
-                                <TableCell align="left">
-                                    <TextField
-                                        style={{ width: "30%" }} 
-                                        id="Level of Characters"
-                                        type="number"
-                                        value={characterLvl}
-                                        onChange={e => ((e.target.value <= 20 && e.target.value > 0) || e.target.value == "") && setCharacterLvl(e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell component="th">
-                                    How many Monsters?
-                                </TableCell>
-                                <TableCell align="left">
-                                    <TextField
-                                        style={{ width: "30%" }}
-                                        id="Number of Monsters"
-                                        type="number"
-                                        value={monsterNumb}
-                                        onChange={e => (e.target.value > 0 || e.target.value == "") && setMonsterNumb(e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell component="th" style={{ borderBottom: "none" }}>
-                                    Difficulty
-                                </TableCell>
-                                <TableCell align="left" style={{ borderBottom: "none" }}>
-                                    <Select
-                                        value={difficulty}
-                                        onChange={e => setDifficulty(e.target.value)}
-                                    >
-                                        <MenuItem value={0}>Easy</MenuItem>
-                                        <MenuItem value={1}>Medium</MenuItem>
-                                        <MenuItem value={2}>Difficult</MenuItem>
-                                        <MenuItem value={3}>Deadly</MenuItem>
-                                    </Select>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell align="left">
-                                    <Button
-                                        variant="contained"
-                                        onClick={() => generateEncounter()}
-                                    >
-                                        Generate Encounter
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                        </TableContainer>
-                </Grid>
                 <br/>
                 <Grid item>
                 {monster.length > 0 && monster.map((m, index) => (
-                    <Paper elevation={6} style={{ border: "solid", borderColor: "darkgray" }}>
+                    <Paper elevation={6} style={{ border: "solid", borderColor: "darkgray", width: "50vw" }}>
                         <br />
-                        <h3>&nbsp;&nbsp; {m.name}</h3>
-                        <br/>
+                        <h3>&nbsp;&nbsp;{m.name}&nbsp;&nbsp;
                         <TextField
                             style={{ width: "65px" }}
                             variant="outlined"
@@ -230,12 +249,14 @@ export const Encounter = () => {
                             value={m.hit_points}
                         />
                         <TextField
-                            style={{ width: "65px"}}
+                            style={{ width: "65px" }}
                             variant="outlined"
                             inputProps={{ min: 0, style: { textAlign: 'center' } }}
                             label="Armor Class"
                             value={m.armor_class}
-                        />
+                            />
+                        </h3>
+                        <br/>
                         <TextField
                             style={{ width: "75px" }}
                             variant="outlined"
@@ -294,7 +315,7 @@ export const Encounter = () => {
                             >
                                 Hide Abilities
                         </Button> 
-                            <TableContainer style={{ width: "50vw" }}>
+                            <TableContainer>
                                 <Table>
                                     <TableHead>
                                         <TableRow>
@@ -328,6 +349,7 @@ export const Encounter = () => {
                 ))}
                 <Grid item>
                     <br/>
+                </Grid>
                 </Grid>
             </Grid>
         </Grid>

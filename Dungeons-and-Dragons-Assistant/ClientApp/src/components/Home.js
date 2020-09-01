@@ -2,13 +2,10 @@ import React from 'react';
 import { Character } from './Character';
 import { Encounter } from './Encounter';
 import Grid from '@material-ui/core/Grid';
-import {
-    Switch,
-    Route,
-    Link
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
+import '../../src/custom.css'
 
 export const Home = () => {
 
@@ -42,8 +39,9 @@ export const Home = () => {
                 <Link to="/Character" style={{ textDecoration: 'none' }}>
                 <Paper elevation={24}>
                 <Grid item style={{ width: '300px', border: "solid", borderColor: "darkgray"}}>
-                    <Button type="button" style={{
-                        backgroundImage: 'url(map.png)',
+                    <Button type="button" class="button glow-button" style={{
+                                backgroundImage: 'url(map.png)',
+                        color:"white",
                         display: "block",
                             backgroundPosition: 'center',
                             backgroundSize: 'cover',
@@ -52,7 +50,7 @@ export const Home = () => {
                             width: '100%',
                             height: '450px',
                         }} >
-                                <h4> Generate <br /> a random <br /> character</h4>
+                                <h4>Generate<br />a random<br />character</h4>
                     </Button>
                     </Grid>
                     </Paper>
@@ -60,8 +58,9 @@ export const Home = () => {
                 <Link to="/Encounter" style={{ textDecoration: 'none' }}>
                 <Paper elevation={24}>
                 <Grid item style={{ width: '300px', border: "solid", borderColor: "darkgray" }}>
-                <Button type="button" style={{
-                    backgroundImage: 'url(map.png)',
+                            <Button type="button" class="button glow-button" style={{
+                                backgroundImage: 'url(map.png)',
+                                color: "white",
                     display: "block",
                         backgroundPosition: 'center',
                         backgroundSize: 'cover',
