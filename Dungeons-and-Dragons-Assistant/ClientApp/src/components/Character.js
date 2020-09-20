@@ -16,10 +16,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 
-
 export const Character = () => {
 
-    const [isCharacterVisible, setIsCharacterVisible] = useState(false);
+    const [isCharacterVisible, setIsCharacterVisible] = useState(true);
 
     const [randomRace, setRandomRace] = useState('');
     const [randomClass, setRandomClass] = useState(''); 
@@ -30,9 +29,8 @@ export const Character = () => {
 
     const [character, setCharacter] = useState('');
 
-    async function generateCharacter () {
+    async function generateCharacter() {
         setIsCharacterVisible(false);
-
         var classList = await fetch('https://www.dnd5eapi.co/api/classes').then(res => res.json());
         var classinfo = classList.results[Math.floor(Math.random() * classList.count)];
         setRandomClass(await fetch('https://www.dnd5eapi.co' + classinfo.url).then(res => res.json()));
@@ -61,9 +59,9 @@ export const Character = () => {
         var classinfo = classList.results[Math.floor(Math.random() * classList.count)];
         setRandomClass(await fetch('https://www.dnd5eapi.co' + classinfo.url).then(res => res.json()));
         setLevel(await fetch('https://www.dnd5eapi.co/api/classes/' + classinfo.index + '/levels/1').then(res => res.json()));
-    }
 
-    useEffect(() => { 
+        var name = getRandomName();
+
         if (randomRace.ability_bonuses) {
             let randomStats = [15, 14, 13, 12, 10, 8];
             randomStats.sort(() => Math.random() - 0.5);
@@ -76,12 +74,12 @@ export const Character = () => {
             var con_number = randomStats[5] + (randomRace.ability_bonuses.filter(y => y.name == "CON").length > 0 ? randomRace.ability_bonuses.filter(y => y.name == "CON")[0].bonus : 0);
         }
 
-            var proficiencyList = []
-            proficiencyList = proficiencyList.concat(randomRace.starting_proficiencies);
-            proficiencyList = proficiencyList.concat(randomClass.proficiencies);
+        var proficiencyList = []
+        proficiencyList = proficiencyList.concat(randomRace.starting_proficiencies);
+        proficiencyList = proficiencyList.concat(randomClass.proficiencies);
 
         setCharacter({
-            name: getRandomName(),
+            name: name,
             race: randomRace.name,
             class: randomClass.name,
             size: randomRace.size,
@@ -131,11 +129,9 @@ export const Character = () => {
                 other: randomItems
             }
         })
-    }, [randomClass])
 
-    useEffect(() => {
         setIsCharacterVisible(true)
-    }, [randomItems])
+    }
 
     useEffect(() => {
         generateCharacter();
@@ -191,229 +187,230 @@ export const Character = () => {
                     </Grid>
             </Grid>
             <br />
-            {isCharacterVisible && character.languages &&  
-                <Grid container
+            <Grid container
                 justify="center"
                 alignItems="center"
             >
-                <Grid container
-                component={Paper}
-                    style={{ border: "solid", borderColor: "darkgray", width: "90%"  }}
+                {isCharacterVisible && character.languages && <React.Fragment> <Grid container
+                    component={Paper}
+                    style={{ border: "solid", borderColor: "darkgray", width: "90%" }}
                 >
-                <Grid container
-                    direction="row"
-                    justify="center"
-                >
-                    <Grid item>
-                        <br/>
-                    <h1 style={{
-                        backgroundImage: 'url(scroll.jpg)',
-                        display: "block",
-                        backgroundPosition: 'center',
-                        backgroundSize: 'cover',
-                        alignSelf: 'stretch',
-                        backgroundRepeat: 'noRepeat',
-                        width: '500px',
-                        height: '165px',
-                        textAlign: 'center',
-                        fontSize: "75px"
-                    }}>
-                        {character.name}
-                        </h1>
-                        <Grid container
-                            direction="row"
-                            justify="space-between"
-                            alignItems="flex-start"
-                        >
-                            <Grid item>
-                        <h5>Race: {character.race}</h5>
-                                <h5>Class: {character.class}</h5>
-                                </Grid>
+                        
+                            <Grid container
+                                direction="row"
+                                justify="center"
+                            >
                                 <Grid item>
-                        <TextField
-                            style={{ width: "65px" }}
-                            variant="outlined"
-                            label="Health"
-                            inputProps={{ min: 0, style: { textAlign: 'center' } }}
-                            value={character.health}
+                                    <br />
+                                    <h1 style={{
+                                        backgroundImage: 'url(scroll.jpg)',
+                                        display: "block",
+                                        backgroundPosition: 'center',
+                                        backgroundSize: 'cover',
+                                        alignSelf: 'stretch',
+                                        backgroundRepeat: 'noRepeat',
+                                        width: '500px',
+                                        height: '165px',
+                                        textAlign: 'center',
+                                        fontSize: "75px"
+                                    }}>
+                                        {character.name}
+                                    </h1>
+                                    <Grid container
+                                        direction="row"
+                                        justify="space-between"
+                                        alignItems="flex-start"
+                                    >
+                                        <Grid item>
+                                            <h5>Race: {character.race}</h5>
+                                            <h5>Class: {character.class}</h5>
+                                        </Grid>
+                                        <Grid item>
+                                            <TextField
+                                                style={{ width: "65px" }}
+                                                variant="outlined"
+                                                label="Health"
+                                                inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                                value={character.health}
+                                            />
+                                            <TextField
+                                                style={{ width: "65px" }}
+                                                variant="outlined"
+                                                inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                                label="Armor Class"
+                                                value={character.equipment.armor.armor_class.base}
+                                            />
+                                            <TextField
+                                                style={{ width: "65px" }}
+                                                variant="outlined"
+                                                label="Speed"
+                                                inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                                value={character.speed}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                    <br />
+                                    <TextField
+                                        style={{ width: "75px" }}
+                                        variant="outlined"
+                                        inputProps={{ min: 0, style: { textAlign: 'center', color: "black" } }}
+                                        label="Strength"
+                                        value={character.stats.STR.number + " (" + character.stats.STR.modifier + ")"}
                                     />
                                     <TextField
-                                        style={{ width: "65px" }}
+                                        style={{ width: "75px" }}
                                         variant="outlined"
                                         inputProps={{ min: 0, style: { textAlign: 'center' } }}
-                                        label="Armor Class"
-                                        value={character.equipment.armor.armor_class.base}
+                                        label="Dexterity"
+                                        value={character.stats.DEX.number + " (" + character.stats.DEX.modifier + ")"}
                                     />
-                        <TextField
-                            style={{ width: "65px" }}
-                            variant="outlined"
-                            label="Speed"
-                            inputProps={{ min: 0, style: { textAlign: 'center' } }}
-                            value={character.speed}
-                        />
-                            </Grid>
-                            </Grid>
-                            <br />
-                        <TextField
-                            style={{ width: "75px" }}
-                            variant="outlined"
-                            inputProps={{ min: 0, style: { textAlign: 'center', color: "black" } }}
-                            label="Strength"
-                            value={character.stats.STR.number + " (" + character.stats.STR.modifier + ")"}
-                        />
-                        <TextField
-                            style={{ width: "75px" }}
-                            variant="outlined"
-                            inputProps={{ min: 0, style: { textAlign: 'center' } }}
-                            label="Dexterity"
-                            value={character.stats.DEX.number + " (" + character.stats.DEX.modifier + ")"}
-                        />
-                        <TextField
-                            style={{ width: "90px" }}
-                            variant="outlined"
-                            inputProps={{ min: 0, style: { textAlign: 'center' } }}
-                            label="Constitution"
-                            value={character.stats.CON.number + " (" + character.stats.CON.modifier + ")"}
-                        />
-                        <TextField
-                            style={{ width: "85px" }}
-                            variant="outlined"
-                            inputProps={{ min: 0, style: { textAlign: 'center' } }}
-                            label="Intelligence"
-                            value={character.stats.INT.number + " (" + character.stats.INT.modifier + ")"}
-                        />
-                        <TextField
-                            style={{ width: "75px" }}
-                            variant="outlined"
-                            inputProps={{ min: 0, style: { textAlign: 'center' } }}
-                            label="Wisdom"
-                            value={character.stats.WIS.number + " (" + character.stats.WIS.modifier + ")"}
-                        />
-                        <TextField
-                            style={{ width: "75px" }}
-                            variant="outlined"
-                            inputProps={{ min: 0, style: { textAlign: 'center' } }}
-                            label="Charisma"
-                            value={character.stats.CHA.number + " (" + character.stats.CHA.modifier + ")"}
-                        />
-                    </Grid>
-                        <Grid item style={{ width: "40%", height: "100%" }}>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <TextField
+                                        style={{ width: "90px" }}
+                                        variant="outlined"
+                                        inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                        label="Constitution"
+                                        value={character.stats.CON.number + " (" + character.stats.CON.modifier + ")"}
+                                    />
+                                    <TextField
+                                        style={{ width: "85px" }}
+                                        variant="outlined"
+                                        inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                        label="Intelligence"
+                                        value={character.stats.INT.number + " (" + character.stats.INT.modifier + ")"}
+                                    />
+                                    <TextField
+                                        style={{ width: "75px" }}
+                                        variant="outlined"
+                                        inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                        label="Wisdom"
+                                        value={character.stats.WIS.number + " (" + character.stats.WIS.modifier + ")"}
+                                    />
+                                    <TextField
+                                        style={{ width: "75px" }}
+                                        variant="outlined"
+                                        inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                        label="Charisma"
+                                        value={character.stats.CHA.number + " (" + character.stats.CHA.modifier + ")"}
+                                    />
+                                </Grid>
+                                <Grid item style={{ width: "40%", height: "100%" }}>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <img src={character.class + ".jpg"} style={{ width: "20vw", height: "100%" }} />
-                        </Grid>
-                        
-                    </Grid>
-                    <Grid container
-                        direction="row"
-                        justify="center"
-                        style={{ width: "100%" }}
-                    >
-                        <Grid item style={{ border: "solid", borderColor: "darkgray" }}>
-                    <TableContainer >
-                        <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell><h2>Abilities</h2></TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {character.traits && character.traits.map((row) => (
-                                        <TableRow>
-                                            <TableCell component="th">
-                                                {row.name}
-                                            </TableCell><TableCell></TableCell>
-                                        </TableRow>
-                                    ))}
-                                    {character.features && character.features.map((row) => (
-                                        <TableRow>
-                                            <TableCell component="th">
-                                                {row.name}
-                                            </TableCell><TableCell></TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                            </TableContainer>
+                                </Grid>
+
                             </Grid>
-                        <Grid item style={{ border: "solid", borderColor: "darkgray" }}>
-                    <TableContainer>
-                        <Table>
-                                <TableHead>
-                                    <TableRow>
-                                    <TableCell><h2>Proficiencies</h2></TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {character.proficiencies && character.proficiencies.map((row) => (
-                                        <TableRow>
-                                            <TableCell component="th">
-                                                {row.name}
-                                            </TableCell>
-                                            <TableCell></TableCell>
-                                        </TableRow>
-                                    ))}
-                                    {character.languages && character.languages.map((row) => (
-                                        <TableRow>
-                                            <TableCell component="th">
-                                                {row.name} (Language)
-                                            </TableCell>
-                                            <TableCell></TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                            </TableContainer>
-                            </Grid>
-                        <Grid item style={{ width:"40vw", border: "solid", borderColor: "darkgray" }}>
-                    <TableContainer >
-                        <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell><h2>Items</h2></TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                        <TableBody>
-                                            {character.equipment && character.equipment.weapons.map((row) => (
+                            <Grid container
+                                direction="row"
+                                justify="center"
+                                style={{ width: "100%" }}
+                            >
+                                <Grid item style={{ border: "solid", borderColor: "darkgray" }}>
+                                    <TableContainer >
+                                        <Table>
+                                            <TableHead>
                                                 <TableRow>
-                                                    <TableCell component="th">
-                                                        {row.name}
-                                                    </TableCell>
+                                                    <TableCell><h2>Abilities</h2></TableCell>
+                                                    <TableCell></TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {character.traits && character.traits.map((row) => (
+                                                    <TableRow>
+                                                        <TableCell component="th">
+                                                            {row.name}
+                                                        </TableCell><TableCell></TableCell>
+                                                    </TableRow>
+                                                ))}
+                                                {character.features && character.features.map((row) => (
+                                                    <TableRow>
+                                                        <TableCell component="th">
+                                                            {row.name}
+                                                        </TableCell><TableCell></TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Grid>
+                                <Grid item style={{ border: "solid", borderColor: "darkgray" }}>
+                                    <TableContainer>
+                                        <Table>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell><h2>Proficiencies</h2></TableCell>
+                                                    <TableCell></TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {character.proficiencies && character.proficiencies.map((row) => (
+                                                    <TableRow>
+                                                        <TableCell component="th">
+                                                            {row.name}
+                                                        </TableCell>
+                                                        <TableCell></TableCell>
+                                                    </TableRow>
+                                                ))}
+                                                {character.languages && character.languages.map((row) => (
+                                                    <TableRow>
+                                                        <TableCell component="th">
+                                                            {row.name} (Language)
+                                            </TableCell>
+                                                        <TableCell></TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Grid>
+                                <Grid item style={{ width: "40vw", border: "solid", borderColor: "darkgray" }}>
+                                    <TableContainer >
+                                        <Table>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell><h2>Items</h2></TableCell>
+                                                    <TableCell></TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {character.equipment && character.equipment.weapons.map((row) => (
+                                                    <TableRow>
+                                                        <TableCell component="th">
+                                                            {row.name}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {row.name == "Net" ? row.special : row.damage.damage_dice}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                                <TableRow>
                                                     <TableCell>
-                                                        {row.name == "Net" ? row.special : row.damage.damage_dice}
+                                                        {character.equipment.armor.name} (Armor)
+                                                 </TableCell>
+                                                    <TableCell>
+                                                        AC {character.equipment.armor.armor_class.base}
                                                     </TableCell>
                                                 </TableRow>
-                                            ))}
-                                            <TableRow>
-                                                <TableCell>
-                                                    {character.equipment.armor.name} (Armor)
-                                                 </TableCell>
-                                                <TableCell>
-                                                    AC {character.equipment.armor.armor_class.base}
-                                                </TableCell>
-                                            </TableRow>
-                                {character.equipment && character.equipment.other.map((row) => (
-                                            <TableRow>
-                                            <TableCell component="th">
-                                                {row.name}
-                                            </TableCell>
-                                        <TableCell>
-                                                {row.desc ? row.desc : <p style={{textAlign: 'center' }}>(No Descrption)</p> }
-                                            </TableCell>
-                                            </TableRow>
-                                        
-                                    ))}
-                            </TableBody>
-                            </Table>
-                            </TableContainer>
+                                                {character.equipment && character.equipment.other.map((row) => (
+                                                    <TableRow>
+                                                        <TableCell component="th">
+                                                            {row.name}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {row.desc ? row.desc : <p style={{ textAlign: 'center' }}>(No Descrption)</p>}
+                                                        </TableCell>
+                                                    </TableRow>
+
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Grid>
+                            </Grid>
                     </Grid>
-                    </Grid>
-                </Grid>
+                </React.Fragment>}
                 <br/>
-                </Grid>}
+                </Grid>
         </div>
     )
 }
